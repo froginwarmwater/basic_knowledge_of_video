@@ -74,6 +74,7 @@
 		B60A26C42D23BD5F0004B957 /* libavdevice.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavdevice.dylib; path = myapp/libs/libavdevice.dylib; sourceTree = "<group>"; };
 		B60A26C52D23BD5F0004B957 /* libavformat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.dylib; path = myapp/libs/libavformat.dylib; sourceTree = "<group>"; };
 		B60A26C62D23BD5F0004B957 /* libavutil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavutil.dylib; path = myapp/libs/libavutil.dylib; sourceTree = "<group>"; };
+		B60A26CE2D266D890004B957 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +129,7 @@
 		B60A26932D23B0750004B957 /* myapp */ = {
 			isa = PBXGroup;
 			children = (
+				B60A26CE2D266D890004B957 /* Info.plist */,
 				B60A26942D23B0750004B957 /* AppDelegate.swift */,
 				B60A26962D23B0750004B957 /* ViewController.swift */,
 				B60A26C02D23B6490004B957 /* testc.h */,
@@ -478,8 +480,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = myapp/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app requires access to the microphone for audio recording.";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -511,8 +515,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = myapp/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app requires access to the microphone for audio recording.";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

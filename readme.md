@@ -10,3 +10,8 @@ wav pcm数据+wav的header (采样率,采样大小,通道数)
 action: self
 target: #selector(myfunc)
 @objc func
+
+3. 安装ffmpeg 4.3
+./configure --prefix=/usr/local/ffmpeg --enable-debug=3 --disable-static --enable-shared --disable-x86asm
+make -j 4
+make install
