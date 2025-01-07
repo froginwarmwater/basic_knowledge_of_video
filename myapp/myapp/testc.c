@@ -7,10 +7,14 @@
 
 #include "testc.h"
 #include <unistd.h>
-
+static int rec_status = 0;
 
 void haha(void) {
     printf("haha");
+}
+
+void set_rec_status(int status) {
+    rec_status = status;
 }
     
 void record_audio(void) {
@@ -20,7 +24,7 @@ void record_audio(void) {
     AVFormatContext *fmt_ctx = NULL;
     //  [[videodevice]: [audiodevice]]
     char *devicename = ":0";
-    
+    rec_status = 1;
     avdevice_register_all();
     AVInputFormat *iformat = av_find_input_format("avfoundation");
     
@@ -48,14 +52,13 @@ void record_audio(void) {
     // 读出来的数据放到AVPacket 里面
     AVPacket pkt;
     av_init_packet(&pkt);
-    int count = 0;
     
     usleep(500000); // 500 ms
 
     ret = av_read_frame(fmt_ctx, &pkt);
     printf("%d\n", ret);
     
-    while (count++ < 50000) {
+    while (rec_status) {
         ret = av_read_frame(fmt_ctx, &pkt);
 
         if (ret == -35) {
