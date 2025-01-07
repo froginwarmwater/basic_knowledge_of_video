@@ -29,7 +29,7 @@ class ViewController: NSViewController {
     
     @objc
     func myfunc() {
-       haha()
+       record_audio()
     }
 
     override var representedObject: Any? {

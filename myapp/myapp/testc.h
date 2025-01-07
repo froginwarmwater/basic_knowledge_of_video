@@ -13,7 +13,7 @@
 #include "libavdevice/avdevice.h"
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
-
+void record_audio(void);
 void haha(void);
 
 #endif /* testc_h */
