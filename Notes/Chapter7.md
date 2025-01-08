@@ -2,7 +2,7 @@
 频域遮蔽效应
 时域遮蔽效应
 
-## 熵编码
+# 一、熵编码
 1. 哈夫曼编码
 
 ![Alt text](image/Chapter7/image.png)
@@ -18,17 +18,14 @@ Speex 包括了回音消除
 G.711不适合做音频编解码
 AAC是用于取代mp3的,用的最广的,压缩率高,保真吕高 
 
----
 ![Alt text](./image/Chapter7/AAC.png)
 
----
-# ADTS格式
+# 二、ADTS格式
 ![Alt text](./image/Chapter7/ADTS.png)
 
----
 
 
-
+# 三、从mp4中重新编码
 ```bash
 ffmpeg -i xxx.mp4 -vn -c:a libfdk_aac -ar 44100 -channels 2 -profile:a aac_he_v2 3.aac
 ```
@@ -60,3 +57,8 @@ ffmpeg -i xxx.mp4 -vn -c:a libfdk_aac -ar 44100 -channels 2 -profile:a aac_he_v2
 
 ### 整体作用：
 - 这条命令会从 `xxx.mp4` 中提取音频部分，编码为 HE-AAC v2 格式（适用于低比特率高质量音频需求），采样率为 44100 Hz，双声道，输出文件保存为 `3.aac`。
+
+# 四、解决报错问题
+```bash
+ffmpeg -i ~/github-repo/basic_knowledge_of_video/video/oceans.mp4 -vn -c:a aac -ar 44100 -ac 2 -b:a 128k 1.aac
+```

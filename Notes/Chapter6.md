@@ -1,8 +1,12 @@
 # 从音频数据中读取音频数据
+注意: ac 参数在ffmpeg 新版本中已经被淘汰了， 该用下面这个-ch_layout [mono \ stereo]
 
 ffplay -ar 44100 -ac 2 -f f32le audio.pcm
 
 ffplay -ar 44100 -f f32le audio.pcm
+
+
+-ch_layout stereo
 
 # 作业
 描述：

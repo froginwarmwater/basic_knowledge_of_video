@@ -13,6 +13,7 @@
 #include "libavdevice/avdevice.h"
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
+#include "libswresample/swresample.h"
 void set_rec_status(int);
 void record_audio(void);
 void haha(void);

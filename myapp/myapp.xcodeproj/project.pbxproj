@@ -21,6 +21,8 @@
 		B60A26CA2D23BD5F0004B957 /* libavformat.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = B60A26C52D23BD5F0004B957 /* libavformat.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B60A26CB2D23BD5F0004B957 /* libavutil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B60A26C62D23BD5F0004B957 /* libavutil.dylib */; };
 		B60A26CC2D23BD5F0004B957 /* libavutil.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = B60A26C62D23BD5F0004B957 /* libavutil.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B60A26D02D2DE87F0004B957 /* libswresample.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B60A26CF2D2DE87F0004B957 /* libswresample.dylib */; };
+		B60A26D12D2DE87F0004B957 /* libswresample.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = B60A26CF2D2DE87F0004B957 /* libswresample.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +52,7 @@
 				B60A26CA2D23BD5F0004B957 /* libavformat.dylib in Embed Libraries */,
 				B60A26CC2D23BD5F0004B957 /* libavutil.dylib in Embed Libraries */,
 				B60A26C82D23BD5F0004B957 /* libavdevice.dylib in Embed Libraries */,
+				B60A26D12D2DE87F0004B957 /* libswresample.dylib in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,6 +78,7 @@
 		B60A26C52D23BD5F0004B957 /* libavformat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.dylib; path = myapp/libs/libavformat.dylib; sourceTree = "<group>"; };
 		B60A26C62D23BD5F0004B957 /* libavutil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavutil.dylib; path = myapp/libs/libavutil.dylib; sourceTree = "<group>"; };
 		B60A26CE2D266D890004B957 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B60A26CF2D2DE87F0004B957 /* libswresample.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libswresample.dylib; path = myapp/libs/libswresample.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +89,7 @@
 				B60A26C92D23BD5F0004B957 /* libavformat.dylib in Frameworks */,
 				B60A26CB2D23BD5F0004B957 /* libavutil.dylib in Frameworks */,
 				B60A26C72D23BD5F0004B957 /* libavdevice.dylib in Frameworks */,
+				B60A26D02D2DE87F0004B957 /* libswresample.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,6 +167,7 @@
 		B60A26C32D23BD5F0004B957 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B60A26CF2D2DE87F0004B957 /* libswresample.dylib */,
 				B60A26C42D23BD5F0004B957 /* libavdevice.dylib */,
 				B60A26C52D23BD5F0004B957 /* libavformat.dylib */,
 				B60A26C62D23BD5F0004B957 /* libavutil.dylib */,
