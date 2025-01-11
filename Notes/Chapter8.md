@@ -4,9 +4,10 @@
 ac 参数在ffmpeg 新版本中已经被淘汰了， 该用下面这个-ch_layout [mono \ stereo]
 
 ```bash
-ffplay -ch_layout stereo -ar 44100 -f s16le audio.pcm
+ffplay -ch_layout stereo -ar 48000 -f s16le /Users/froginwarmwater/Documents/audio_dev/audio.pcm
 
-ffplay -ch_layout stereo -ar 44100 -f f32le audio.pcm
+ffplay -ch_layout stereo -ar 44100 -f f32le /Users/froginwarmwater/Documents/audio_dev/audio.pcm
+
 ```
 
 

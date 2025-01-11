@@ -18,29 +18,30 @@ void set_rec_status(int status) {
     rec_status = status;
 }
     
-SwrContext* init_swr(void) {
-    SwrContext *swr_ctx = NULL;
-    // channel number
-    
-    
-    //AV_CH_LAYOUT_STEREO 定义左前方和右前方
-    swr_alloc_set_opts(NULL, // <#struct SwrContext *s#>   ctx
-                       AV_CH_LAYOUT_STEREO, // <#int64_t out_ch_layout#> 输出channel布局
-                       AV_SAMPLE_FMT_S16,   // <#enum AVSampleFormat out_sample_fmt#> 输出的采样格式
-                       44100,               // <#int out_sample_rate#> 采样率
-                       AV_CH_LAYOUT_STEREO, // <#int64_t in_ch_layout#> 输入的channel 布局
-                       AV_SAMPLE_FMT_FLT,   // <#enum AVSampleFormat in_sample_fmt#> 输入的采样格式
-                       44100,       // <#int in_sample_rate#> 输入的采样率
-                       0,           //
-                       NULL);
-    
+SwrContext* init_swr(int64_t in_ch_layout, enum AVSampleFormat in_sample_fmt, int in_sample_rate,
+                     int64_t out_ch_layout, enum AVSampleFormat out_sample_fmt, int out_sample_rate) {
+    SwrContext *swr_ctx = swr_alloc_set_opts(
+        NULL,
+        out_ch_layout,
+        out_sample_fmt,
+        out_sample_rate,
+        in_ch_layout,
+        in_sample_fmt,
+        in_sample_rate,
+        0,
+        NULL);
+
     if (!swr_ctx) {
-        
+        fprintf(stderr, "Failed to allocate SwrContext\n");
+        return NULL;
     }
-    
-    if(swr_init(swr_ctx) < 0) {
-        
+
+    if (swr_init(swr_ctx) < 0) {
+        fprintf(stderr, "Failed to initialize SwrContext\n");
+        swr_free(&swr_ctx);
+        return NULL;
     }
+
     return swr_ctx;
 }
 
@@ -58,7 +59,7 @@ void record_audio(void) {
     
     AVFormatContext *fmt_ctx = NULL;
     //  [[videodevice]: [audiodevice]]
-    char *devicename = ":0";
+    char *devicename = ":2";
     rec_status = 1;
     avdevice_register_all();
     AVInputFormat *iformat = av_find_input_format("avfoundation");
@@ -66,8 +67,8 @@ void record_audio(void) {
     AVDictionary *options = NULL;
     // add
     av_dict_set(&options, "sample_rate", "48000", 0); // 采样率 48 kHz
-    av_dict_set(&options, "channels", "1", 0);       // 双声道
-    av_dict_set(&options, "sample_format", "fltp", 0); // 浮点音频格式
+    av_dict_set(&options, "channels", "1", 0);       // 单声道
+    av_dict_set(&options, "sample_format", "f32le", 0); // 浮点音频格式
 
     
     // open device
@@ -84,33 +85,56 @@ void record_audio(void) {
     FILE* outfile = fopen(out, "wb+");
     
     
-    // 我们之前采集的数据是4096  4096 / 4 = 1024
-    // 双通道 所以1024 / 2 = 512 则为单通道 
+
+    SwrContext *swr_ctx = init_swr(
+        AV_CH_LAYOUT_MONO,    // 输入通道布局（单声道）
+        AV_SAMPLE_FMT_FLT,    // 输入采样格式（16 位有符号整型）
+        48000,                // 输入采样率
+        AV_CH_LAYOUT_STEREO,  // 输出通道布局（立体声，假如需要）
+        AV_SAMPLE_FMT_FLT,    // 输出采样格式（32 位浮点型，假如需要）
+        48000                 // 输出采样率（根据需要调整）
+    );
+    
+    int package_size = 2048;
+    int in_samples = package_size / 2;
+//    int out_samples = av_rescale_rnd(swr_get_delay(swr_ctx, 48000) + in_samples, 44100, 48000, AV_ROUND_UP);
+    int out_samples = av_rescale_rnd(
+                                                   swr_get_delay(swr_ctx, 48000) + in_samples,
+                                                   48000,  // 输出采样率
+                                                   48000,  // 输入采样率
+                                                   AV_ROUND_UP
+                                               );
+    printf("out_samples = %d", out_samples);
+//    int total_out_samples = av_rescale_rnd(
+//        swr_get_delay(swr_ctx, 48000) + in_samples,
+//        48000,
+//        48000,
+//        AV_ROUND_UP
+//    );
+//    int single_channel_samples = total_out_samples / 2;
+
+    // 我们之前采集的数据是4096
+    // packet size is 4096(0x7fe6a3880a00)
+    //  4096 / 2 = 2048 // 因为s16是2个字节
+
+    // av_samples_alloc_array_and_samples(&src_data, &src_linesize, 1, 512, AV_SAMPLE_FMT_FLT, 0);
+    // av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, 1, 512, AV_SAMPLE_FMT_S16, 0);
     //创建输入缓冲区
     av_samples_alloc_array_and_samples(&src_data,  // 输出参数 缓冲区地址
                                        &src_linesize, // 缓冲区大小
-                                       2,           // 通道个数
-                                       512,         // 单通道采样个数
+                                       1,           // 通道个数
+                                       in_samples,         // 单通道采样个数
                                        AV_SAMPLE_FMT_FLT,   // 采样格式
                                        0);
     //创建输出缓冲区
     av_samples_alloc_array_and_samples(&dst_data,  // 输出参数 缓冲区地址
                                        &dst_linesize, // 缓冲区大小
                                        2,           // 通道个数
-                                       512,         // 单通道采样个数
-                                       AV_SAMPLE_FMT_S16,   // 采样格式
+                                       out_samples / 2,         // 单通道采样个数
+                                       AV_SAMPLE_FMT_FLT,   // 采样格式
                                        0);
     
-    
-    SwrContext *swr_ctx = NULL;
-    // channel number
-    
-    
-    //AV_CH_LAYOUT_STEREO 定义左前方和右前方
-    swr_ctx = init_swr();
-    
-    
-    
+
     // 读出来的数据放到AVPacket 里面
     AVPacket pkt;
     av_init_packet(&pkt);
@@ -136,15 +160,38 @@ void record_audio(void) {
         
         av_log(NULL, AV_LOG_INFO, "packet size is %d(%p)\n", pkt.size, pkt.data);
 
-//      进行内存拷贝, 按字节拷贝
+////      进行内存拷贝, 按字节拷贝
+//        memcpy((void *)src_data[0], pkt.data, pkt.size);
+//        swr_convert(swr_ctx,    // 重采样的上下文
+//                    dst_data,   // 输出结果缓冲区
+//                    out_samples,        // 每个通道的采样数
+//                    (const uint8_t **)src_data, // 输入缓冲区
+//                    in_samples);       // 输入单个通道的采样数
+//        if (pkt.size > 0 && pkt.data) {
+////            fwrite(pkt.data, pkt.size, 1, outfile);
+//            fwrite(dst_data[0], 1, dst_linesize, outfile);
+//            fflush(outfile);
+//        }
+        
         memcpy((void *)src_data[0], pkt.data, pkt.size);
-        swr_convert(swr_ctx,    // 重采样的上下文
-                    dst_data,   // 输出结果缓冲区
-                    512,        // 每个通道的采样数
-                    (const uint8_t **)src_data, // 输入缓冲区
-                    512);       // 输入单个通道的采样数
+        int converted_samples = swr_convert(
+            swr_ctx,    // 重采样的上下文
+            dst_data,   // 输出结果缓冲区
+            out_samples,// 每个通道的采样数
+            (const uint8_t **)src_data, // 输入缓冲区
+            in_samples  // 输入单通道的采样数
+        );
+//        if (converted_samples > 0) {
+//            size_t bytes_to_write = converted_samples * 2 * 4; // 2 通道 * 每样本 4 字节 (FLT)
+//            fwrite(dst_data[0], 1, bytes_to_write, outfile);
+//            fflush(outfile);
+//        }
+
+//
         if (pkt.size > 0 && pkt.data) {
 //            fwrite(pkt.data, pkt.size, 1, outfile);
+//            size_t bytes_to_write = converted_samples * 2 * 4; // 2 通道 * 每样本 4 字节 (FLT)
+//            fwrite(dst_data[0], 1, bytes_to_write, outfile);
             fwrite(dst_data[0], 1, dst_linesize, outfile);
             fflush(outfile);
         }
